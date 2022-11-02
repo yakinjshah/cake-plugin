@@ -15,7 +15,7 @@
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-  CURLOPT_URL => 'http://localhost/cake/laravel/public/api/product',
+  CURLOPT_URL => get_option('cake_api_host').'product',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -25,7 +25,7 @@ curl_setopt_array($curl, array(
   CURLOPT_CUSTOMREQUEST => 'GET',
   CURLOPT_HTTPHEADER => array(
     'Accept: application/json',
-    'Authorization: Bearer Sb7sl8afNB9ArScwDNT'
+    'Authorization: Bearer '.get_option('cake_api_key'),
   ),
 ));
 
@@ -33,7 +33,8 @@ $response = curl_exec($curl);
 
 curl_close($curl);
 
-$products = json_decode($response);
+$response_array = json_decode($response);
+$products = $response_array->data;
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
@@ -45,13 +46,13 @@ $products = json_decode($response);
     <?php foreach($products as $product): ?>
         <div class="col-md-6 mt-3">
             <div class="card">
-                <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
+                <img class="card-img-top" src="<?php echo get_option('cake_asset_url')."166740727039.jpg" ?>" alt="Card image cap">
                 <div class="card-body">
-                    <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h4 class="card-title"><a href="product.html" title="View Product"><?php echo $product->name ?></a></h4>
+                    <p class="card-text"><?php echo wp_trim_words($product->description, 20, '...') ?></p>
                     <div class="row">
                         <div class="col">
-                            <p class="btn btn-danger btn-block">99.00 $</p>
+                            <h3>$<?php echo $product->price ?></h3>
                         </div>
                         <div class="col">
                             <a href="#" class="btn btn-success btn-block">Add to cart</a>
@@ -64,10 +65,7 @@ $products = json_decode($response);
 </div>
 
 <style>
-    /*
-    ** Style Simple Ecommerce Theme for Bootstrap 4
-    ** Created by T-PHP https://t-php.fr/43-theme-ecommerce-bootstrap-4.html
-    */
+
     .bloc_left_price {
         color: #c01508;
         text-align: center;
