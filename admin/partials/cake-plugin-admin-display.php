@@ -12,29 +12,25 @@
  * @subpackage Cake_Plugin/admin/partials
  */
 
-$curl = curl_init();
+$get_products = wp_remote_get( get_option('cake_api_host').'product',
+    array(
+        'timeout' => 10,
+        'headers' => array(
+            'Authorization' => 'Bearer '.get_option('cake_api_key')
+        )
+    )
+ );
 
-curl_setopt_array($curl, array(
-  CURLOPT_URL => get_option('cake_api_host').'product',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
-  CURLOPT_FOLLOWLOCATION => true,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'GET',
-  CURLOPT_HTTPHEADER => array(
-    'Accept: application/json',
-    'Authorization: Bearer '.get_option('cake_api_key'),
-  ),
-));
+if (! isset($get_products->errors)) {
+    $get_products_array = json_decode($get_products['body']);
+    $products = $get_products_array->data;
+} else {
+    echo '<div class="alert alert-danger" role="alert">
+            Something went wront, please check plugin settings.
+        </div>';
+    $products = array();
+}
 
-$response = curl_exec($curl);
-
-curl_close($curl);
-
-$resource_array = json_decode($response);
-$products = $resource_array->data;
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->

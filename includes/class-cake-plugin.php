@@ -163,9 +163,8 @@ class Cake_Plugin {
 		// register settings
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings' );
 		
-		add_action( 'admin_post_nopriv_add_foobar', 'prefix_admin_add_foobar' );
-
-
+		// add dynamic route to init
+		
 		
 
 	}

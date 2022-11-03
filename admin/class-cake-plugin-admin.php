@@ -114,6 +114,7 @@ class Cake_Plugin_Admin {
 
 		add_submenu_page( $this->plugin_name, 'Add New Cake', 'Add New', 'manage_options', $this->plugin_name."-add", array($this, 'display_add_new_page'));
 
+		add_submenu_page( $this->plugin_name, 'Categories', 'Categories', 'manage_options', $this->plugin_name."-categories", array($this, 'display_categories_page'));
 		add_submenu_page( $this->plugin_name, 'Settings', 'Settings', 'manage_options', $this->plugin_name."-settings", array($this, 'display_settings_page'));
 	}
 	
@@ -127,6 +128,9 @@ class Cake_Plugin_Admin {
 
 	public function display_settings_page() {
 		include_once( 'partials/cake-plugin-admin-settings.php' );
+	}
+	public function display_categories_page() {
+		include_once( 'partials/cake-plugin-admin-categories.php' );
 	}
 
 	// Register our setting

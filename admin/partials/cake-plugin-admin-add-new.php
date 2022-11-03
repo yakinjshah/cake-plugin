@@ -61,11 +61,30 @@ if (isset($_POST['product_name'])) {
     } else {
         ?>
             <div class="alert alert-success mt-2" role="alert">
-                Product added successfully. <a href="<?php echo site_url('/wp-admin/admin.php?page=cake-plugin') ?>">See all products</a>
+                Product added successfully. <a href="<?php echo admin_url('admin.php?page=cake-plugin') ?>">See all products</a>
             </div>
         <?php
     }
 
+}
+
+$get_categories = wp_remote_get( get_option('cake_api_host').'category',
+    array(
+        'timeout' => 10,
+        'headers' => array(
+            'Authorization' => 'Bearer '.get_option('cake_api_key')
+        )
+    )
+ );
+
+
+if (! isset($get_categories->errors)) {
+    $categories = json_decode($get_categories['body']);
+} else {
+    echo '<div class="alert alert-danger" role="alert">
+            Something went wront, please check plugin settings.
+        </div>';
+    $categories = array();
 }
 
 ?>
@@ -88,11 +107,10 @@ if (isset($_POST['product_name'])) {
                 <div class="form-group">
                     <label for="product_category">Product Category</label>
                     <select class="form-control" id="product_category" name="product_category" required>
-                        <option value="1">Category 1</option>
-                        <option value="2">Category 2</option>
-                        <option value="3">Category 3</option>
-                        <option value="4">Category 4</option>
-                        <option value="5">Category 5</option>
+                        <option hidden selected disabled>~ Choose Categories ~</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?php echo $category->id ?>"><?php echo $category->category ?></option>
+                        <?php endforeach ?>
                     </select>
                 </div>
                 <div class="form-group">
