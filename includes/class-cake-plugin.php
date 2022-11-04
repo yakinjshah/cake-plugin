@@ -163,9 +163,8 @@ class Cake_Plugin {
 		// register settings
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings' );
 		
-		// add dynamic route to init
-		
-		
+
+		// $this->loader->add_action( 'init', $plugin_admin, 'register_cake_post_type' );
 
 	}
 
@@ -227,5 +226,7 @@ class Cake_Plugin {
 	public function get_version() {
 		return $this->version;
 	}
+
+
 
 }

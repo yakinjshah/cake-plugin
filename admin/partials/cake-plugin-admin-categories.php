@@ -12,15 +12,24 @@
  * @subpackage Cake_Plugin/admin/partials
  */
 
-
-if (isset($_POST['category'])) {
+if (isset($_POST['category_name'])) {
     $result = wp_remote_post(get_option('cake_api_host').'category', array(
       'method' => 'POST',
       'headers' => array('Authorization' => 'Bearer '.get_option('cake_api_key')),
       'body' => array(
-        'category' => $_POST['category']
+        'category' => $_POST['category_name']
       )
     ));
+}
+
+if (isset($_POST['delete_category'])) {
+    $result =  wp_remote_request(
+        get_option('cake_api_host').'category/'.$_POST['delete_category'], 
+        array(
+            'method'      => 'DELETE',
+            'headers'     => ["Authorization" => 'Bearer '.get_option('cake_api_key')],
+        )
+    );
 }
 
 $get_categories = wp_remote_get( get_option('cake_api_host').'category',
@@ -54,11 +63,11 @@ if (! isset($get_categories->errors)) {
             <div class="row">
                 <div class="col-md-5 ">
                     <h2 class=" mb-5 mt-5">Add Categories</h2>
-                    <form method="post" action="options.php">
+                    <form method="post" action="">
 
                         <div class="form-group">
                             <label for="exampleInputEmail1">Category Name </label>
-                            <input type="text" class="form-control" id="category_name" aria-describedby="category" placeholder="Category" name="cake_category_name">
+                            <input type="text" class="form-control" id="category_name" aria-describedby="category" placeholder="Category" name="category_name">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Add</button>
@@ -76,7 +85,12 @@ if (! isset($get_categories->errors)) {
                             <tr>
                                 <td><?php echo $category->id ?></td>
                                 <td><?php echo $category->category ?></td>
-                                <td><a href="" class="btn btn-danger btn-sm">Delete</a></td>
+                                <td>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="delete_category" value="<?php echo $category->id ?>">
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                         <?php endforeach ?>
                     </table>
